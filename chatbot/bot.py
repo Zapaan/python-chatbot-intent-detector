@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from intent_detector import SCENARII
-from intent_detector.actions import TextAction
+
+from .intent_detector import SCENARII
+from .intent_detector.actions import TextAction
 
 
 FALLBACK = TextAction("Whacchasayin' ?")
@@ -27,16 +28,16 @@ def find_scenario(text):
             return s
 
 
-def run():
+def run(url):
     # TODO code easier to test
 
     if HELLO:
-        HELLO.execute()
+        HELLO.execute(url=url)
 
     inp = wait_for_input(PROMPT)
     scenar = find_scenario(inp)
     while not scenar:
-        FALLBACK.execute()
+        FALLBACK.execute(url=url)
         inp = wait_for_input(PROMPT)
         scenar = find_scenario(inp)
 
@@ -46,7 +47,7 @@ def run():
 
         while cur.actions:
             # Pop them so they don't run twice
-            cur.actions.pop(0).execute()
+            cur.actions.pop(0).execute(url=url)
 
         if not cur.connections:
             # This is the end ...
@@ -60,8 +61,4 @@ def run():
                 break
         else:
             # Can't understand
-            FALLBACK.execute()
-
-
-if __name__ == '__main__':
-    run()
+            FALLBACK.execute(url=url)
